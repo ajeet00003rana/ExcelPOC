@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<div class="text-center">
+    <h3 class="display-4">Welcome To Demo</h3>
+    <h5 class="display-4">Export Data</h5>
+    <h3>
+        <a asp-controller="Home" asp-action="ExportToExcel"> Download Excel with hidden column</a>
+        <br/>
+        <a asp-controller="Home" asp-action="ExportToExcelDefault"> Download Excel</a>
+    </h3>
+</div>
+
