@@ -10,14 +10,16 @@ namespace ExcelPOC.Controllers
     public class HomeController : Controller
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
-
-        public HomeController(IWebHostEnvironment webHostEnvironment)
+        private readonly IExcelService _excelService;
+        public HomeController(IWebHostEnvironment webHostEnvironment, IExcelService excelService)
         {
             _webHostEnvironment = webHostEnvironment;
+            _excelService = excelService;
         }
 
         public IActionResult Index()
         {
+            UploadExcel();
             return View();
         }
 
@@ -41,7 +43,7 @@ namespace ExcelPOC.Controllers
             string fileName = "Excel_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
             string excelFilename = Path.Combine(_webHostEnvironment.WebRootPath, "Download", fileName);
 
-            var bytes = await ExcelService.CreateExcel(data, excelFilename, (DataSet ds, string file) =>
+            var bytes = await _excelService.CreateExcel(data, excelFilename, (DataSet ds, string file) =>
                 {
                     CommonFunction.ExportDataSetWithInBuiltFunction(ds, file);
                     return Task.CompletedTask;
@@ -58,7 +60,7 @@ namespace ExcelPOC.Controllers
             string fileName = "Excel_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
             string excelFilename = Path.Combine(_webHostEnvironment.WebRootPath, "Download", fileName);
 
-            var bytes = await ExcelService.CreateExcel(data, excelFilename, ExportToExcelDefault);
+            var bytes = await _excelService.CreateExcel(data, excelFilename, ExportToExcelDefault);
             return File(bytes, MediaTypeNames.Application.Octet, fileName);
         }
 
@@ -66,6 +68,13 @@ namespace ExcelPOC.Controllers
         {
             CommonFunction.ExportDataSetWithCustomLogic(ds, file);
             return Task.CompletedTask;
+        }
+
+
+        private void UploadExcel()
+        {
+            string excelFilename = Path.Combine(_webHostEnvironment.WebRootPath, "Download", "Excel_20230529224830.xlsx");
+            var data = _excelService.ExcelUploader(System.IO.File.ReadAllBytes(excelFilename), "Excel_20230529224830.xlsx");
         }
     }
 }

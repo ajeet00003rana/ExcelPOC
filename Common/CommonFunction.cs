@@ -5,6 +5,11 @@ namespace ExcelPOC.Common
 {
     public static class CommonFunction
     {
+        public static string TrimNullCheck(this string str)
+        {
+            return !string.IsNullOrEmpty(str) ? str.Trim() : str;
+        }
+
         public static void ExportDataSetWithInBuiltFunction(DataSet ds, string destination)
         {
             DataTable table = ds.Tables[0];
